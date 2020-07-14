@@ -33,7 +33,7 @@ jobs:
 
       - name: 'downloading setus'
         timeout-minutes: 360
-        run: python download.py ${{ secrets.mongodb }}
+        run: python download.py
       - name: 'Commit setus'
         run: |
           git config --local user.email "action@github.com"
