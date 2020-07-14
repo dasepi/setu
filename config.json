@@ -3,6 +3,7 @@
     "database": "setu",
     "collection": "setu_all",
     "path": "./pics/",
+    "path_original": "./pics_original/",
     "APPKEY": "",
     "APPID": ""
 }

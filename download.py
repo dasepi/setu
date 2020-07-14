@@ -10,14 +10,17 @@ import pymongo
 import time
 import random
 
-'''获取配置'''
-with open('./config.json', 'r', encoding='utf-8') as f:
+with open('./config.json', 'r', encoding='utf-8') as f:  # 从json读配置
     config = json.loads(f.read())
     print('获取配置成功')
-myclient = pymongo.MongoClient(config['mongodb'])
-mydb = myclient[config['database']]
-mycol = mydb[config['collection']]
-path = config['path']
+# myclient = pymongo.MongoClient(sys.argv[1])  # 数据库地址
+myclient = pymongo.MongoClient(config['mongodb'])  # 数据库地址
+mydb = myclient[config['database']]  # 数据库
+mycol = mydb[config['collection']]  # 集合
+# path = './pics/'  # 下载路径
+# path_original = './pics_original/'  # 下载路径
+path = config['path']  # 下载路径
+path_original = config['path_original']  # 下载路径
 
 headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL00)',
            'Accept-Language': 'zh_CN',
@@ -40,6 +43,21 @@ async def download(session, filename, url, path):  # 下载
         faild_list.append(url)
         return
 
+
+async def download_original(session, filename, url, path):  # 下载
+    try:
+        async with session.get(url, headers=headers) as res:
+            assert res.status == 200
+            date = await res.content.read()
+            async with aiofiles.open(path + filename, 'wb') as f:
+                await f.write(date)
+            print('{}下载成功  '.format(filename, res.status))
+            return
+    except:  # 不知道为什么会出错.....
+        print('下载失败: >>>{}<<<'.format(filename))
+        faild_list.append(url)
+        return
+
 alldata = mycol.find({})  # 读取数据库所有信息
 faild_list = []
 task_data = []
@@ -54,12 +72,16 @@ async def main():
             tasks = []  # 任务列表
             faild_list.clear()
             list = os.listdir(path)  # 获取下载路径的所有文件
+            list_original = os.listdir(path_original)
             for data in task_data:
                 url = data['url']
                 url_original = data['url_original']
                 filename = data['filename']  # 获取文件名
                 if filename not in list:
                     tasks.append(asyncio.create_task(download(session, filename, url, path)))  # 加入任务
+                if filename not in list_original:
+                    tasks.append(
+                        asyncio.create_task(download_original(session, filename, url_original, path_original)))  # 加入任务(原图)
             await asyncio.gather(*tasks)  # 并发执行
             if not len(faild_list): #如果没有下载失败的就结束
                 break
