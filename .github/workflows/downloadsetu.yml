@@ -1,9 +1,9 @@
 name: 'download-setu'
 
 on:
-  schedule:
-    - cron: '0 20 * * *'
-    - cron: '*/20 * * * *'
+#  schedule:
+#   - cron: '0 20 * * *'
+#    - cron: '*/20 * * * *'
   watch:
      types: started
 
