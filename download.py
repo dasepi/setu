@@ -27,13 +27,14 @@ headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL0
            'App-Version': '5.0.191',
            'Referer': 'https://www.pixiv.net'}
 
+
 async def download(session, filename, url, path):  # 下载
     try:
         async with session.get(url, headers=headers) as res:
             assert res.status == 200
             date = await res.content.read()
             Image.open(io.BytesIO(date)).save(path + filename)  # 以二进制读取文件,并转码为对应格式保存
-            print('{}下载成功'.format(filename))
+            print('{}下载成功 :{}'.format(filename, res.status))
             return
     except:  # 不知道为什么会出错.....
         print('下载失败: >>>{}<<<'.format(filename))
@@ -48,10 +49,10 @@ async def download_original(session, filename, url, path):  # 下载
             date = await res.content.read()
             async with aiofiles.open(path + filename, 'wb') as f:
                 await f.write(date)
-            print('原图:{}下载成功'.format(filename))
+            print('{}下载成功  '.format(filename, res.status))
             return
     except:  # 不知道为什么会出错.....
-        print('原图下载失败: >>>{}<<<'.format(filename))
+        print('下载失败: >>>{}<<<'.format(filename))
         faild_list.append(url)
         return
 
@@ -82,7 +83,6 @@ async def main():
             await asyncio.gather(*tasks)  # 并发执行
             if not len(faild_list): #如果没有下载失败的就结束
                 break
-            time.sleep(random.randint(3, 5))
 
 if __name__ == '__main__':
     print('开始下载~')
