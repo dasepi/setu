@@ -1,4 +1,4 @@
-name: 'download-setus'
+name: 'download-setu'
 
 on:
   schedule:
