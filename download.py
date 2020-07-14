@@ -11,7 +11,7 @@ import time
 import random
 
 '''获取配置'''
-with open('/pixiv-mongodb/select/config.json', 'r', encoding='utf-8') as f:
+with open('./config.json', 'r', encoding='utf-8') as f:
     config = json.loads(f.read())
     print('获取配置成功')
 myclient = pymongo.MongoClient(config['mongodb'])
