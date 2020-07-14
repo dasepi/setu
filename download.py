@@ -17,6 +17,7 @@ with open('./config.json', 'r', encoding='utf-8') as f:
 myclient = pymongo.MongoClient(config['mongodb'])
 mydb = myclient[config['database']]
 mycol = mydb[config['collection']]
+path = config['path']
 path_original = config['path_original']
 
 headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL00)',
@@ -68,6 +69,7 @@ async def main():
         for _ in range(3):
             tasks = []  # 任务列表
             faild_list.clear()
+            list = os.listdir(path)  # 获取下载路径的所有文件
             list_original = os.listdir(path_original)
             for data in task_data:
                 url = data['url']
