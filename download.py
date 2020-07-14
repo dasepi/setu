@@ -15,10 +15,10 @@ with open('./config.json', 'r', encoding='utf-8') as f:
     config = json.loads(f.read())
     print('获取配置成功')
 myclient = pymongo.MongoClient(config['mongodb'])
-mydb = myclient['setu']  # 数据库
-mycol = mydb['setu_all']  # 集合
-path = './pics/'  # 下载路径
-path_original = './pics_original/'  # 下载路径
+mydb = myclient[config['database']]
+mycol = mydb[config['collection']]
+path = config['path']
+path_original = config['path_original']
 
 headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL00)',
            'Accept-Language': 'zh_CN',
