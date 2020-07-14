@@ -1,0 +1,9 @@
+{
+    "mongodb": "mongodb://13.70.18.252:27017/setu",
+    "database": "setu",
+    "collection": "setu_all",
+    "path": "./pics/",
+    "path_original": "./pics_original/",
+    "APPKEY": "",
+    "APPID": ""
+}
