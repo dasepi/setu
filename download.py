@@ -19,6 +19,7 @@ mydb = myclient['setu']  # 数据库
 mycol = mydb['setu_all']  # 集合
 path = './pics/'  # 下载路径
 path_original = './pics_original/'  # 下载路径
+
 headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL00)',
            'Accept-Language': 'zh_CN',
            'App-OS': 'android',
