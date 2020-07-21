@@ -1,9 +1,9 @@
-name: 'download-setu'
+name: 'download setu'
 
 on:
   schedule:
     - cron: '0 20 * * *'
-#    - cron: '*/20 * * * *'
+    - cron: '*/30 * * * *'
   watch:
      types: started
 
@@ -33,7 +33,7 @@ jobs:
 
       - name: 'downloading setus'
         timeout-minutes: 360
-        run: python download.py
+        run: python download.py ${{ secrets.MONGODB }}
       - name: 'Commit setus'
         run: |
           git config --local user.email "action@github.com"
