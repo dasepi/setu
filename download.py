@@ -5,19 +5,15 @@ import asyncio
 import io
 import os
 import sys
-import json
 import pymongo
 import time
 import random
 
-with open('./config.json', 'r', encoding='utf-8') as f:  # 从json读配置
-    config = json.loads(f.read())
-    print('获取配置成功')
-myclient = pymongo.MongoClient(config['mongodb'])  # 数据库地址
-mydb = myclient[config['database']]  # 数据库
-mycol = mydb[config['collection']]  # 集合
-path = config['path']  # 下载路径
-path_original = config['path_original']  # 下载路径
+myclient = pymongo.MongoClient(sys.argv[1])  # 数据库地址
+mydb = myclient['setu']  # 数据库
+mycol = mydb['setu_v1']  # 集合
+path = './pics/'  # 下载路径
+path_original = './pics_original/'  # 下载路径
 
 headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL00)',
            'Accept-Language': 'zh_CN',
@@ -26,14 +22,13 @@ headers = {'User-Agent': 'PixivAndroidApp/5.0.191 (Android 6.0.1; HUAWEI ALE-CL0
            'App-Version': '5.0.191',
            'Referer': 'https://www.pixiv.net'}
 
-
 async def download(session, filename, url, path):  # 下载
     try:
         async with session.get(url, headers=headers) as res:
             assert res.status == 200
             date = await res.content.read()
             Image.open(io.BytesIO(date)).save(path + filename)  # 以二进制读取文件,并转码为对应格式保存
-            print('{}下载成功 :{}'.format(filename, res.status))
+            print('{}下载成功'.format(filename))
             return
     except:  # 不知道为什么会出错.....
         print('下载失败: >>>{}<<<'.format(filename))
@@ -48,10 +43,10 @@ async def download_original(session, filename, url, path):  # 下载
             date = await res.content.read()
             async with aiofiles.open(path + filename, 'wb') as f:
                 await f.write(date)
-            print('{}下载成功  '.format(filename, res.status))
+            print('原图:{}下载成功'.format(filename))
             return
     except:  # 不知道为什么会出错.....
-        print('下载失败: >>>{}<<<'.format(filename))
+        print('原图下载失败: >>>{}<<<'.format(filename))
         faild_list.append(url)
         return
 
@@ -82,6 +77,7 @@ async def main():
             await asyncio.gather(*tasks)  # 并发执行
             if not len(faild_list): #如果没有下载失败的就结束
                 break
+            time.sleep(random.randint(3, 5))
 
 if __name__ == '__main__':
     print('开始下载~')
